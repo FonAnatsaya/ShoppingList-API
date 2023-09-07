@@ -12,11 +12,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-const employeeList = [
-    { id: uuidv4(), name: "Johnny", position: "Junior Developer", salary: "25,000" },
-    { id: uuidv4(), name: "Linda", position: "IT Support", salary: "30,000" },
-    { id: uuidv4(), name: "Stephen", position: "Data Analyst", salary: "38,000" },
-    { id: uuidv4(), name: "Rainny", position: "CEO", salary: "500,000" }
+let employeeList = [
+    { id: uuidv4(), name: "Johnny", position: "Junior Developer", salary: 25000 },
+    { id: uuidv4(), name: "Linda", position: "IT Support", salary: 30000 },
+    { id: uuidv4(), name: "Stephen", position: "Data Analyst", salary: 38000 },
+    { id: uuidv4(), name: "Rainny", position: "CEO", salary: 500000 }
 ]
 
 app.get('/r/:subreddit', (req, res) => { //Defining a generic path.
@@ -51,13 +51,13 @@ app.patch('/api/employees/:id', (req, res) => {
     const updatedEmployeeData = req.body;
 
     // Find the employee in my database based on employeeId
-    const employeeToUpdate = employeeList.find((employee) => employee.id === employeeId);
+    const employeeToUpdate = employeeList.find((employee) => (employee.id === employeeId));
 
     if (!employeeToUpdate) {
         return res.status(404).json({ message: 'Employee not found' });
     }
 
-    // Update the employee's data (replace with my actual update logic)
+    // Update the employee's data 
     employeeToUpdate.name = updatedEmployeeData.name;
     employeeToUpdate.position = updatedEmployeeData.position;
     employeeToUpdate.salary = updatedEmployeeData.salary;
@@ -65,6 +65,20 @@ app.patch('/api/employees/:id', (req, res) => {
     // Respond with a success message and the updated employee
     res.status(200).json({ message: 'Employee updated successfully', employee: employeeToUpdate });
 });
+
+app.delete('/api/employees/:id', (req, res) => {
+    const employeeId = req.params.id;
+    const updatedEmp = employeeList.filter((emp) => (emp.id !== employeeId));
+
+    // Check if an employee was found and deleted
+    if (employeeList.length === updatedEmp.length) {
+        return res.status(404).json({ message: 'The employee not found!' });
+    }
+
+    // Update the employee's data
+    employeeList = updatedEmp;
+    res.status(204).json({ message: 'Employee updated successfully' });
+})
 
 app.listen(8080, () => {
     console.log("Listening on port 8080!!!");
