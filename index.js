@@ -9,11 +9,6 @@ const corsOptions = {
     allowedHeaders: 'Content-Type,Authorization',
 };
 
-
-
-
-
-
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -24,15 +19,14 @@ let employeeList = [
     { id: uuidv4(), name: "Rainny", position: "CEO", salary: 500000 }
 ]
 
-app.get('/r/:subreddit', (req, res) => { //Defining a generic path.
-    //const { subreddit } = req.params; //Deconstructor object req.params
-    //res.send(`<h1>Browsing the ${subreddit} subreddit</h1>`);
-    res.send(`<h1>Browsing the ${req.params.subreddit} subreddit</h1>`); // 
-})
+let productList = [
+    { id: uuidv4(), name: "A1", quantity: "18", price: "5" },
+    { id: uuidv4(), name: "A2", quantity: "20", price: "10" },
+    { id: uuidv4(), name: "B1", quantity: "50", price: "8" }
+]
 
-app.get('/r/:subreddit/:postId', (req, res) => { //Defining a generic path.
-    const { subreddit, postId } = req.params;
-    res.send(`<h1>Viewing Post ID: ${postId} on the ${subreddit} subreddit</h1>`);
+app.get('/', (req, res) => {
+    res.send('This is Home page!');
 })
 
 app.get('/empList', (req, res) => {
@@ -41,10 +35,6 @@ app.get('/empList', (req, res) => {
 
 app.post('/api/employees', (req, res) => {
     const newEmployee = { ...req.body, id: uuidv4() };
-    // { id: uuidv4(), name: "Rainny", position: "CEO", salary: "500,000" }
-    // Save the new employee to my database
-    // Replace this with my database logic
-    console.log(newEmployee);
     employeeList.push(newEmployee);
 
     // Send a response back to the frontend
@@ -83,6 +73,26 @@ app.delete('/api/employees/:id', (req, res) => {
     // Update the employee's data
     employeeList = updatedEmp;
     res.status(204).json({ message: 'Employee updated successfully' });
+})
+
+app.get('/pdList', (req, res) => {
+    res.send(productList);
+})
+
+app.post('/api/product', (req, res) => {
+    const newProduct = { ...req.body, id: uuidv4() };
+    productList.push(newProduct);
+    res.status(201).json({ message: 'The product added successfully' });
+})
+
+app.delete('/api/product/:id', (req, res) => {
+    const productId = req.params.id;
+    const updatedProduct = productList.filter((pd) => (pd.id !== productId));
+    if (!updatedProduct) {
+        res.status(404).json({ message: 'The product not found' });
+    }
+    productList = updatedProduct;
+    res.status(204).json({ message: 'Product updated successfully' });
 })
 
 app.listen(8080, () => {
