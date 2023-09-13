@@ -85,11 +85,24 @@ app.post('/api/product', (req, res) => {
     res.status(201).json({ message: 'The product added successfully' });
 })
 
+app.patch('/api/product/:id', (req, res) => {
+    const productId = req.params.id;
+    const updatedProduct = req.body;
+    const productToUpdated = productList.find((pd) => (pd.id === productId));
+    if (!productToUpdated) {
+        return res.status(404).json({ message: 'The product not found' });
+    }
+    productToUpdated.name = updatedProduct.name;
+    productToUpdated.quantity = updatedProduct.quantity;
+    productToUpdated.price = updatedProduct.price;
+    res.status(200).json({ message: 'The product updated successfully' });
+})
+
 app.delete('/api/product/:id', (req, res) => {
     const productId = req.params.id;
     const updatedProduct = productList.filter((pd) => (pd.id !== productId));
-    if (!updatedProduct) {
-        res.status(404).json({ message: 'The product not found' });
+    if (updatedProduct.length === productList.length) {
+        return res.status(404).json({ message: 'The product not found' });
     }
     productList = updatedProduct;
     res.status(204).json({ message: 'Product updated successfully' });
