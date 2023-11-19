@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 const Employee = require('./models/employee');
 const Product = require('./models/product');
+const Occupation = require('./models/occupation');
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -23,52 +24,65 @@ mongoose.connect('mongodb://127.0.0.1:27017/appMallDemo', { useNewUrlParser: tru
         console.log(err);
     })
 
-app.get('/', (req, res) => {
-    res.send('This is Home page!');
+// const isCEO = async (form) => {
+//     await Employee.find({ position: 'CEO' })
+//         .then((data) => {
+//             if (!data || (form._id === data._id)) return res.json({ isCEO: false });
+//             else {
+//                 return res.json({ isCEO: true });
+//             }
+//         })
+//         .catch((error) => {
+//             console.error("OOP! There's an ERROR", error);
+//         })
+// }
+
+app.get('/occupationList', (req, res) => {
+    Occupation.find({})
+        .then(occupationList => {
+            res.send(occupationList);
+        })
+        .catch(error => {
+            console.error('Error fetching employee list:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        });
 })
 
-app.get('/empList', async (req, res) => {
-    const employeeList = await Employee.find();
-    res.send(employeeList);
+app.get('/empList', (req, res) => {
+    Employee.find({})
+        .then(employeeList => {
+            res.send(employeeList);
+        })
+        .catch(error => {
+            console.error('Error fetching employee list:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        });
 })
 
 app.post('/api/employees', (req, res) => {
-    const newEmployeeData = req.body;
+    const newEmpData = new Employee(req.body);
 
-    // Create a new 'Employee' document using the model and save it to the database
-    const employee = new Employee(newEmployeeData);
-
-    employee.save()
+    newEmpData.save()
         .then((data) => {
             console.log("Employee added successfully");
             console.log(data);
             res.status(201).json({ message: 'Employee added successfully' });
         })
-        .catch((err) => {
-            console.log("OOP! There's an ERROR", err);
-            res.status(500).json({ error: 'Failed to add employee' });
-        });
-});
+        .catch((_) => (res.status(500).json({ error: 'Error updating employee' })));
+})
 
 app.patch('/api/employees/:id', (req, res) => {
     const employeeId = req.params.id;
     const updatedEmployeeData = req.body;
 
-    // Find the employee in my database based on employeeId and update data in MongoDB
-    Employee.findByIdAndUpdate(
-        employeeId,
-        updatedEmployeeData,
-    )
+    Employee.findByIdAndUpdate(employeeId, updatedEmployeeData)
         .then((data) => {
             if (!data) {
-                return res.status(404).json({ error: 'Employee not found' });
+                return res.status(204).json({ error: 'Employee not found' });
             }
             res.status(200).json({ message: 'Employee updated successfully', employee: data });
         })
-        .catch((error) => {
-            console.error("Error updating employee:", error);
-            res.status(500).json({ error: 'Error updating employee' });
-        });
+        .catch((_) => (res.status(500).json({ error: 'Error updating employee' })));
 })
 
 app.delete('/api/employees/:id', (req, res) => {
@@ -114,7 +128,7 @@ app.patch('/api/product/:id', (req, res) => {
     Product.findByIdAndUpdate(productId, updatedProductData)
         .then((data) => {
             if (!data) {
-                return res.status(404).json({ error: 'Product not found' });
+                return res.status(204).json({ error: 'Product not found' });
             }
             res.status(200).json({ message: 'Product updated successfully', product: data });
         })

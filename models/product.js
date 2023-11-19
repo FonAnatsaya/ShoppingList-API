@@ -25,7 +25,6 @@ const productSchema = new mongoose.Schema({
 });
 
 const Product = mongoose.model('Product', productSchema);
-module.exports = Product;
 
 // Product.insertMany([
 //     { name: "A1", quantity: "18", price: "5" },
@@ -40,3 +39,4 @@ module.exports = Product;
 //         console.log("OOP! There's an ERROR", err);
 //     })
 
+module.exports = Product;

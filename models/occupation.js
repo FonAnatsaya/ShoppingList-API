@@ -9,28 +9,25 @@ mongoose.connect('mongodb://127.0.0.1:27017/appMallDemo', { useNewUrlParser: tru
         console.log(err);
     })
 
-const employeeSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    position: {
-        type: String,
-        required: true
-    },
-    salary: {
+const occupationSchema = new mongoose.Schema({
+    key: {
         type: Number,
+        required: true
+    },
+    description: {
+        type: String,
         required: true
     }
 });
 
-const Employee = mongoose.model('Employee', employeeSchema);
+const Occupation = mongoose.model('Occupation', occupationSchema);
 
-// Employee.insertMany([
-//     { name: "Johnny", position: "Junior Developer", salary: 25000 },
-//     { name: "Linda", position: "IT Support", salary: 30000 },
-//     { name: "Stephen", position: "Data Analyst", salary: 38000 },
-//     { name: "Rainny", position: "CEO", salary: 500000 }
+// Occupation.insertMany([
+//     { key: 1000, description: 'Junior full stack developer' },
+//     { key: 1200, description: 'Junior front-end developer' },
+//     { key: 1300, description: 'Junior back-end developer' },
+//     { key: 1400, description: 'Automatic Tester' },
+//     { key: 1500, description: 'Cloud opera' }
 // ])
 //     .then((data) => {
 //         console.log("It worked");
@@ -40,4 +37,4 @@ const Employee = mongoose.model('Employee', employeeSchema);
 //         console.log("OOP! There's an ERROR", err);
 //     })
 
-module.exports = Employee;
+module.exports = Occupation;
