@@ -7,7 +7,7 @@ const Product = require('./models/product');
 const Occupation = require('./models/occupation');
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:3001',
     methods: 'GET,POST,DELETE,PATCH',
     allowedHeaders: 'Content-Type,Authorization',
 };
