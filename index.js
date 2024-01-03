@@ -93,7 +93,7 @@ app.delete("/api/employees/:id", (req, res) => {
     });
 });
 
-app.get("/pdList", async (req, res) => {
+app.get("/pdList", async (_, res) => {
   const productList = await Product.find();
   res.send(productList);
 });
